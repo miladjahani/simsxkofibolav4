@@ -35,6 +35,30 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 Open `http://localhost:8000`.
 
+## GitHub Pages deployment (static, client-side)
+The app also runs entirely in the browser on GitHub Pages: the SX-EW engine and
+NSGA-II optimizer are ported 1:1 to `app/static_assets/engine.js`, and the static
+build serves read-only metadata as JSON under `docs/api/`. Static mode is
+activated automatically by the `mode=static-client-side` marker in `api/health`;
+scenarios and operational data are then stored in browser localStorage.
+
+- Workflow: `.github/workflows/deploy.yml` runs the Python tests and an engine.js
+  smoke test on every push to `main`, builds `docs/` with `python build_pages.py`,
+  boot-smoke-tests the built site, and deploys via the official Pages actions.
+- One-time setup in the repository: **Settings → Pages → Source: GitHub Actions**.
+- Local build check:
+```bash
+python3 -m pytest test_process.py -q
+node tests/engine_smoke.js
+python3 build_pages.py
+node tests/static_boot_smoke.js
+```
+
+Note: the full-featured FastAPI backend (Excel/LibreOffice recalculation,
+server-side scenarios, authentication) still requires `uvicorn` as above; the
+Pages deployment covers the native SX-EW simulation, analysis and optimization
+workflows without a server.
+
 ## V6 Industrial Flowsheet Editor
 - Drag/drop block palette on the PFD canvas.
 - Interactive input/output ports for graph connections.

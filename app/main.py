@@ -27,7 +27,7 @@ engine=create_engine(DBURL,connect_args=connect_args)
 SessionLocal=sessionmaker(bind=engine,autocommit=False,autoflush=False)
 pwd=CryptContext(schemes=["bcrypt"],deprecated="auto")
 app=FastAPI(title="SX-EW Digital Simulator", version="1.0.0")
-app.mount("/static",StaticFiles(directory=str(BASE/"static")),name="static")
+app.mount("/static",StaticFiles(directory=str(BASE/"static_assets")),name="static")
 
 class Base(DeclarativeBase): pass
 class User(Base):
